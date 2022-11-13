@@ -53,8 +53,11 @@ int main(int argc, char *argv[]) {
     for (;;) {
         while (((clientsockfd = accept(sockfd, NULL, NULL)) == -1));
         char message[] = "HELLO";
-        send(clientsockfd, &message, MESSAGE_MAXSIZE, 0);
 
+        printf("Server: sending %s\n", message);
+        send(clientsockfd, &message, MESSAGE_MAXSIZE, 0);
+        recv(clientsockfd, message, MESSAGE_MAXSIZE, 0);
+        printf("From client: %s\n", message);
     }
 
 }
