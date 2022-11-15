@@ -50,8 +50,11 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
+    printf("Server now listening on port %d\n", port);
+
     for (;;) {
         while (((clientsockfd = accept(sockfd, NULL, NULL)) == -1));
+        printf("A client connected\n");
         char message[] = "HELLO";
 
         printf("Server: sending %s\n", message);
