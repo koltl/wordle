@@ -13,8 +13,10 @@
 
 #define MESSAGE_MAXSIZE 512
 
+void client_communication(int clientsocket);
+
 int main(int argc, char *argv[]) {
-    int sockfd, clientsockfd, port;
+    int sockfd, clientsockfd, port, pid, numberOfProccesses;
 
     struct sockaddr_in server;
 
@@ -55,12 +57,46 @@ int main(int argc, char *argv[]) {
     for (;;) {
         while (((clientsockfd = accept(sockfd, NULL, NULL)) == -1));
         printf("A client connected\n");
-        char message[] = "HELLO";
+        pid = fork();
+        switch(pid) {
+            case -1:
+                // case of fork failed to be created
+                perror("\nFailed to create fork!  Exiting...");
+                
+                // close clientsockfd, fork failed
+                close(clientsockfd);
+            case 0:
+                printf("\nChild: Child process started\n");
+                client_communication(clientsockfd);
+            
+            default:
+                if (pid != -1) {
+                    numberOfProccesses++;
+                }
 
-        printf("Server: sending %s\n", message);
-        send(clientsockfd, &message, MESSAGE_MAXSIZE, 0);
-        recv(clientsockfd, message, MESSAGE_MAXSIZE, 0);
-        printf("From client: %s\n", message);
+        }
     }
 
+}
+
+void client_communication(int clientsocket) {
+    char message[] = "HELLO";
+    char words[4][44] = {"pipe", "socket", "fork", "thread"};
+    printf(words[1]);
+    printf("Server: sending %s\n", message);
+    send(clientsocket, &message, MESSAGE_MAXSIZE, 0);
+    recv(clientsocket, message, MESSAGE_MAXSIZE, 0);
+    printf("From client: %s\n", message);
+    while (strcmp("READY", message) == 0 || strcmp("MORE", message) == 0) {
+        printf("Sending word to client... \n");
+        send(clientsocket, words[3], MESSAGE_MAXSIZE, 0);
+        recv(clientsocket, message, MESSAGE_MAXSIZE, 0);
+        printf("this prints\n");
+    }
+
+    if (strcmp("QUIT", message) == 0) {
+        printf("exiting process");
+        exit(0);
+    }
+    exit(0);
 }
