@@ -23,15 +23,16 @@ int main(int argc, char *argv[]) {
     if (argc > 2) {
         printf("Usage: %s port_number\n", argv[0]);
         exit(-1);
+    } else if (argc == 2) {
+        port = atoi(argv[1]);
+        if (port < 1024 || port > 65535) {
+            printf("Port number must be between 1024 and 65535, inclusively\n");
+            exit(-1);
+        }
+    } else {
+        port = 3280;
     }
-
-    port = 3280;
-
-    if (port < 1024 || port > 65535) {
-        printf("Port number must be between 1024 and 65535, inclusively\n");
-        exit(-1);
-    }
-
+    
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
     server.sin_addr.s_addr = INADDR_ANY;
@@ -66,7 +67,8 @@ int main(int argc, char *argv[]) {
                 // close clientsockfd, fork failed
                 close(clientsockfd);
             case 0:
-                printf("\nChild: Child process started\n");
+                // log child process started and handle client in function
+                printf("\nChild: Child process #%d started\n", getpid());
                 client_communication(clientsockfd);
             
             default:
@@ -81,22 +83,42 @@ int main(int argc, char *argv[]) {
 
 void client_communication(int clientsocket) {
     char message[] = "HELLO";
-    char words[4][44] = {"pipe", "socket", "fork", "thread"};
-    printf(words[1]);
-    printf("Server: sending %s\n", message);
-    send(clientsocket, &message, MESSAGE_MAXSIZE, 0);
+    char randomWord[MESSAGE_MAXSIZE];
+    int randomNum;
+    // pool of words for gameplay
+    char words[7][MESSAGE_MAXSIZE] = {"pipe", "socket", "fork", "thread", "connect", "listen", "bind"};
+
+    // seed random number generator
+    srand(getppid());
+
+    // send 'HELLO' to client
+    printf("Child (%d): sending '%s'\n", getpid(), message);
+    send(clientsocket, "HELLO", MESSAGE_MAXSIZE, 0);
     recv(clientsocket, message, MESSAGE_MAXSIZE, 0);
-    printf("From client: %s\n", message);
-    while (strcmp("READY", message) == 0 || strcmp("MORE", message) == 0) {
-        printf("Sending word to client... \n");
-        send(clientsocket, words[3], MESSAGE_MAXSIZE, 0);
+    printf("Child (%d): received '%s'\n", getpid(), message);
+
+    if (strcmp("QUIT", message) == 0) {
+        printf("Child (%d): Exiting process\n", getpid());
+        close(clientsocket);
+        exit(0);
+    }
+    while (strcmp("READY", message) == 0 
+            || strcmp("MORE", message) == 0
+            || strcmp("WORD", message) == 0) {
+        randomNum = rand() % 7;
+        strcpy(randomWord, words[randomNum]);
+        printf("Child (%d): sending word '%s' to client\n", getpid(), randomWord);
+        send(clientsocket, randomWord, MESSAGE_MAXSIZE, 0);
         recv(clientsocket, message, MESSAGE_MAXSIZE, 0);
-        printf("this prints\n");
+        printf("Child (%d): received '%s'\n", getpid(), message);
     }
 
     if (strcmp("QUIT", message) == 0) {
-        printf("exiting process");
+        printf("Child (%d): Exiting process\n", getpid());
+        close(clientsocket);
         exit(0);
     }
+    printf("Child (%d): Exiting process\n", getpid());
+    close(clientsocket);
     exit(0);
 }
