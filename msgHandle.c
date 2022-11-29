@@ -16,13 +16,11 @@ void msgSend(int sock, char msg[512])
 {
     int ret;
     strcat(msg, "<");
-    printf("\nsending: ");
-    printf(msg);
     if(send(sock, msg, 512, 0) == -1){
         perror("Error sending");
         close(sock);
     }else{
-        printf("\nsent!");
+        printf("\nsent!\n");
     }
     
 }
@@ -32,18 +30,17 @@ char *msgRec(int sockfd)
 {
     char msg[512];
     char *finMsg = malloc(sizeof(char)*512);
-    if(recv(sockfd, msg, 512, 0) > 0){
-        printf("message recieved!");
+    int byteRec = recv(sockfd, msg, 512, 0);
+    if(byteRec> 0){
+        printf("\nmessage recieved!");
+    }else if(byteRec ==0) {
+        printf("Recieved nothing");
+    }else{
+        perror("Error recieving");
     }
-    printf("\n\nThe base recieved message is ");
-    printf("%s\n", msg);
-    
     for(int i = 0; i < 512; i++){
         if(msg[i] == '<'){
             memcpy(finMsg, msg, (i));
-            printf("Final Message: ");
-            printf(finMsg);
-            printf("\n");
             return(finMsg);
         }
     }
