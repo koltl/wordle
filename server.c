@@ -1,3 +1,18 @@
+/*************************************************************
+ *      
+ * Filename: server.c 
+ * purpose: Handles up to 12 client wordle game clients and
+ *          sends words to the clients needed for gameplay 
+ *
+ *                      CITATIONS
+ * Citation 1
+ *  Author:             Dr. Frye
+ *  Title:              tcpserv.c
+ *  Date:               November 5, 2022
+ *  Retreived from:
+ *      qacad@kutztown:/export/home/public/frye/csc328/sockets/tcpcliserv
+ *************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,9 +88,18 @@ int main(int argc, char *argv[]) {
     // log that server is now listening on specified port
     printf("Server now listening on port %d\n", port);
 
+    // Citation 1
+    // Part of the following block of code was retreived from
+    // Dr. Frye's tcpserv.c on November 12, 2022
+    // ------------------------------------------------------
     for (;;) {
+        // infinite loop of accepting connections on socket sockfd
+        // until it accepts a valid connection
         while (((clientsockfd = accept(sockfd, NULL, NULL)) == -1));
+    // ------------------------------------------------------
         printf("A client connected\n");
+
+        // new process for client
         pid = fork();
         switch(pid) {
             case -1:
@@ -100,8 +124,8 @@ int main(int argc, char *argv[]) {
 }
 
 void client_communication(int clientsocket) {
-    char message[] = "HELLO";
-    char randomWord[MESSAGE_MAXSIZE];
+    char *message = (char *)(malloc(sizeof(char)*512));
+    char sendMsg[MESSAGE_MAXSIZE] = {};
     int randomNum;
     // pool of words for gameplay
     char words[7][MESSAGE_MAXSIZE] = {"pipe", "socket", "fork", "thread", "connect", "listen", "bind"};
@@ -110,50 +134,54 @@ void client_communication(int clientsocket) {
     srand(getppid());
 
     // send 'HELLO' to client
-    printf("Child (%d): sending '%s'\n", getpid(), message);
-    msgSend(clientsocket, "HELLO");
+    printf("Child (%d): sending '%s'\n", getpid(), sendMsg);
+    strcpy(sendMsg, "HELLO");
+    msgSend(clientsocket, sendMsg);
 
     // receive word from client
-    char *recMessage = msgRec(clientsocket);
-    printf("Child (%d): received '%s'\n", getpid(), recMessage);
+    strcpy(message, msgRec(clientsocket));
+    printf("Child (%d): received '%s'\n", getpid(), message);
 
     // if word received is 'QUIT', quit the process.
-    if (strcmp("QUIT", recMessage) == 0) {
+    if (strcmp("QUIT", message) == 0) {
         printf("Child (%d): Exiting process\n", getpid());
+        free(message);
         close(clientsocket);
         exit(0);
     }
 
     // if word received is either 'READY', 'MORE', or 'WORD',
     // select a random word and send to client
-    while (strcmp("READY", recMessage) == 0 
-            || strcmp("MORE", recMessage) == 0
-            || strcmp("WORD", recMessage) == 0) {
+    while (strcmp("READY", message) == 0 
+            || strcmp("MORE", message) == 0
+            || strcmp("WORD", message) == 0) {
 
         // generate random number in range of word pool size
         // and set random word to an item in words pool list
         // at a random index
         randomNum = rand() % 7;
-        strcpy(randomWord, words[randomNum]);
+        strcpy(sendMsg, words[randomNum]);
 
         // log and send the random word to client
-        printf("Child (%d): sending word '%s' to client\n", getpid(), randomWord);
-        msgSend(clientsocket, randomWord);
+        printf("Child (%d): sending word '%s' to client\n", getpid(), sendMsg);
+        msgSend(clientsocket, sendMsg);
 
         // receive a message from client
-        char *recMessage = msgRec(clientsocket);
-        printf("Child (%d): received '%s'\n", getpid(), recMessage);
+        strcpy(message, msgRec(clientsocket));
+        printf("Child (%d): received '%s'\n", getpid(), message);
     }
 
     // if received message is something other than 'READY',
     // 'MORE', and 'WORD' - end the process
     if (strcmp("QUIT", message) == 0) {
         printf("Child (%d): Exiting process\n", getpid());
+        free(message);
         close(clientsocket);
         exit(0);
     }
 
     printf("Child (%d): Exiting process\n", getpid());
+    free(message);
     close(clientsocket);
     exit(0);
 }
