@@ -121,6 +121,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    close(sockfd);
+
 }
 
 void client_communication(int clientsocket) {
