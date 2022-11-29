@@ -12,13 +12,13 @@
 #include <string.h>
 
 
-void msgSend(int sock, char msg[512])
+void msgSend(int sockfd, char msg[512])
 {
     int ret;
     strcat(msg, "<");
-    if(send(sock, msg, 512, 0) == -1){
+    if(send(sockfd, msg, 512, 0) == -1){
         perror("Error sending");
-        close(sock);
+        close(sockfd);
     }else{
         printf("\nsent!\n");
     }
@@ -34,9 +34,11 @@ char *msgRec(int sockfd)
     if(byteRec> 0){
         printf("\nmessage recieved!");
     }else if(byteRec ==0) {
-        printf("Recieved nothing");
+        printf("Recieved nothing, closing");
+        close(sockfd);
     }else{
         perror("Error recieving");
+        close(sockfd);
     }
     for(int i = 0; i < 512; i++){
         if(msg[i] == '<'){
