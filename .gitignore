@@ -5,3 +5,4 @@ client_copy.c
 gameplay.c
 gameplay_copy.c
 junk.c
+client
