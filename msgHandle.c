@@ -59,7 +59,7 @@ char *msgRec(int sockfd)
     char *finMsg = malloc(sizeof(char)*512); //the *final* that has been processed
     int byteRec = recv(sockfd, msg, 512, 0); 
     if(byteRec> 0){
-        printf("\nmessage recieved!");
+       
     }else if(byteRec ==0) {
         printf("Recieved nothing, closing");
         close(sockfd);
