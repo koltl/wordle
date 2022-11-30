@@ -1,4 +1,7 @@
 a.out
-client
 server
 library.a
+client_copy.c
+gameplay.c
+gameplay_copy.c
+junk.c
