@@ -1,17 +1,20 @@
-/***************************************************************************************/
-/*																				                                             */
-/* Author: 			    Hamad Ahmed 												    										       */
-/* Date Created:   	November 6, 2022   											    							         */
-/* Major:  		      Computer Science											                             */
-/* Professor Name: 	Dr. Frye    												                               */
-/* Due Date: 		    11:59pm, Tuesday, November 29, 2022     						               */
-/* Course:          CSC 328                                                            */
-/* Assignment: 		  Wordle assignment												                           */
-/* Filename: 		    client.c     						        				                           */
-/* Description: 	  The purpose of this assignment is to establish a connection with a */
-/*                  server, communicate with the server, and create the Wordle gameplay*/
-/*                                                                                     */
-/***************************************************************************************/
+/****************************************************************************************/
+/*																				                                              */
+/* Author: 			    Hamad Ahmed 												    										        */
+/* Date Created:   	November 6, 2022   											    							          */
+/* Major:  		      Computer Science											                              */
+/* Professor Name: 	Dr. Frye    												                                */
+/* Due Date: 		    11:59pm, Tuesday, November 29, 2022     						                */
+/* Course:          CSC 328                                                             */
+/* Assignment: 		  Wordle assignment												                            */
+/* Filename: 		    client.c     						        				                            */
+/* Description: 	  The purpose of this assignment is to establish a connection with a  */
+/*                  server, communicate with the server, and create the Wordle gameplay */
+/* Citations:       Line 64 to 75, in this program, is based on Dr. Frye's 'client.c',  */
+/*                  found in her '/export/home/public/frye/csc328/sockets/sum'          */
+/*                  directory, example's from line 102 to 114.                          */
+/*                                                                                      */
+/****************************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
