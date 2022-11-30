@@ -4,9 +4,9 @@
 /* Date Created:   	November 6, 2022   											    							         */
 /* Major:  		      Computer Science											                             */
 /* Professor Name: 	Dr. Frye    												                               */
-/* Due Date: 		    11:59pm, Tuesday, October 4, 2022     						                 */
+/* Due Date: 		    11:59pm, Tuesday, November 29, 2022     						               */
 /* Course:          CSC 328                                                            */
-/* Assignment: 		  Homework #6													                               */
+/* Assignment: 		  Wordle assignment												                           */
 /* Filename: 		    client.c     						        				                           */
 /* Description: 	  The purpose of this assignment is to establish a connection with a */
 /*                  server, communicate with the server, and create the Wordle gameplay*/

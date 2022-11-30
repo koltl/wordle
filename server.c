@@ -1,8 +1,12 @@
 /*************************************************************
  *      
- * Filename: server.c 
- * purpose: Handles up to 12 client wordle game clients and
- *          sends words to the clients needed for gameplay 
+ * Filename:    server.c 
+ * Purpose:     Handles up to 12 client wordle game clients and
+ *              sends words to the clients needed for gameplay 
+ * Major:       Computer Science
+ * Course:      CSC 328
+ * Professor:   Dr. Frye
+ * Due date:    November 29, 2022
  *
  *                      CITATIONS
  * Citation 1
@@ -10,7 +14,7 @@
  *  Title:              tcpserv.c
  *  Date:               November 5, 2022
  *  Retreived from:
- *      qacad@kutztown:/export/home/public/frye/csc328/sockets/tcpcliserv
+ *      acad@kutztown:/export/home/public/frye/csc328/sockets/tcpcliserv
  *************************************************************/
 
 #include <stdio.h>
@@ -121,10 +125,20 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // close socket and end program
     close(sockfd);
+    exit(0);
 
 }
 
+/**********************************************************************/
+/* 																		                                */
+/* Function name:	client_communication								                      */
+/* Description: 	Handle sending/receiving to a wordle game client    */
+/* Parameters:  	int clientsocket - socket for the connected client  */
+/* Return Value: 	none                                                */
+/* 																	                                  */
+/**********************************************************************/
 void client_communication(int clientsocket) {
     char *message = (char *)(malloc(sizeof(char)*512));
     char sendMsg[MESSAGE_MAXSIZE] = {};
